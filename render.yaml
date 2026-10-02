@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: keenon-xai-proxy
+    runtime: node
+    plan: free
+    buildCommand: "true"
+    startCommand: node server.mjs
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: XAI_UPSTREAM
+        value: https://api.x.ai
