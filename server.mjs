@@ -78,11 +78,13 @@ const server = http.createServer(async (req, res) => {
     }
 
     const upstream = await fetch(target, init);
-    const outHeaders = {};
-    upstream.headers.forEach((value, key) => {
-      if (!HOP.has(key.toLowerCase())) outHeaders[key] = value;
-    });
+    // Node fetch decompresses; never forward upstream content-encoding / length.
     const buf = Buffer.from(await upstream.arrayBuffer());
+    const outHeaders = {
+      "content-type": upstream.headers.get("content-type") || "application/json",
+      "content-length": String(buf.length),
+      "cache-control": "no-store",
+    };
     res.writeHead(upstream.status, outHeaders);
     res.end(buf);
   } catch (err) {
