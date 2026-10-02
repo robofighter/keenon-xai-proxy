@@ -69,8 +69,10 @@ const server = http.createServer(async (req, res) => {
       if (!k || HOP.has(k.toLowerCase())) continue;
       if (k.toLowerCase().startsWith("x-forwarded-")) continue;
       if (k.toLowerCase() === "x-proxy-token") continue;
+      if (k.toLowerCase() === "accept-encoding") continue;
       headers[k] = v;
     }
+    headers["accept-encoding"] = "identity";
 
     const init = { method: req.method || "GET", headers };
     if (req.method && !["GET", "HEAD"].includes(req.method)) {
